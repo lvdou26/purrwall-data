@@ -1,7 +1,6 @@
 name: sparks
 # Hourly market-trend snapshot -> purrwall.xyz/api/sparks-ingest.
-# Public repo on purpose: Actions minutes are free here, and nothing in this
-# pipeline is secret except the ingest token (repo secret SPARKS_TOKEN).
+# Needs one repo secret: SPARKS_TOKEN (the ingest token).
 on:
   schedule:
     - cron: '7 * * * *'
@@ -19,7 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # Pinned: after the account rename, scheduled runs still reported the
+      # old owner name as github.repository, and a checkout through the old
+      # name follows a redirect anyone could break by registering that name.
       - uses: actions/checkout@v4
+        with:
+          repository: lvdou26/purrwall-data
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -35,8 +39,8 @@ jobs:
       - name: Commit history sample
         if: always()
         run: |
-          git config user.name 'purrwall-data bot'
-          git config user.email 'bot@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           # `|| true`: a run that died before recordHistory leaves no history/
           # at all, and `if: always()` must not turn that into a second red X.
           git add history || true
