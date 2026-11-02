@@ -18,12 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      # Pinned: after the account rename, scheduled runs still reported the
-      # old owner name as github.repository, and a checkout through the old
-      # name follows a redirect anyone could break by registering that name.
       - uses: actions/checkout@v4
-        with:
-          repository: lvdou26/purrwall-data
       - uses: actions/setup-node@v4
         with:
           node-version: 22

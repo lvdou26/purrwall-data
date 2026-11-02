@@ -1,4 +1,4 @@
-// Hourly market-trend snapshot for purrwall.xyz (public aggregate data only).
+// Hourly market-trend snapshot for purrwall.xyz.
 //
 // Enumerates every live Hyperliquid market (perps incl. HIP-3 builder dexs,
 // spot pairs; outcome tokens excluded), fetches 24 x 1h candles per market,
@@ -138,8 +138,8 @@ async function listMarkets() {
  *
  * CADENCE IS IRREGULAR, and consumers must be built for it. The cron asks for
  * hourly, but GitHub deprioritises scheduled workflows on public repos and
- * drops triggers outright: measured over the 20 runs before 2026-07-27, the
- * median gap was 2.2h and the worst 4.8h. Every row therefore carries its own
+ * drops triggers outright: over the 60 days to 2026-11-02 the median gap was
+ * 4.8h and the longest 10.5h. Every row therefore carries its own
  * `t` and must be matched by TIMESTAMP — indexing "24h ago" as rows[-24] would
  * silently read a sample anywhere from 24 to 100+ hours old.
  *

@@ -5,8 +5,6 @@ Hourly pipeline that snapshots a 24-point (1h) price trend for every live
 blob to [purrwall.xyz](https://purrwall.xyz), where the list view renders
 per-row trend glyphs instantly — no client-side candle fetching.
 
-- **Public aggregate market data only.** No user data of any kind flows
-  through this repo or pipeline.
 - `fetch-sparks.mjs` — enumerate markets → 24×1h closes each (paced well
   under Hyperliquid's public rate limits) → POST to the site's ingest
   endpoint (token-gated).
@@ -35,12 +33,11 @@ derivable into whatever serving format eventually wants it.
 
   **Samples are irregular — always match on `t`, never by row position.** The
   cron asks for hourly, but GitHub deprioritises scheduled workflows on public
-  repos and silently drops triggers: measured over the 20 runs before
-  2026-07-27, the median gap was **2.2 h** and the worst was **4.8 h**, with
-  only occasional true 1 h intervals. So "the sample 24 h ago" is a
-  nearest-by-timestamp lookup with a tolerance, not `rows[-24]`, and a
-  consumer should treat a gap beyond its tolerance as *no answer* rather than
-  reaching for the next row along.
+  repos and silently drops triggers: over the 60 days to 2026-11-02 the median
+  gap between samples was **4.8 h** and the longest **10.5 h**. So "the sample
+  24 h ago" is a nearest-by-timestamp lookup with a tolerance, not `rows[-24]`,
+  and a consumer should treat a gap beyond its tolerance as *no answer* rather
+  than reaching for the next row along.
 - `history/first-seen.json` — `{"baseline": "YYYY-MM-DD", "seen": {"<coin>": "YYYY-MM-DD"}}`.
   **Read `baseline` before using this.** The first run stamps every market that
   already existed with that day, because the file cannot know when they truly
@@ -50,5 +47,4 @@ derivable into whatever serving format eventually wants it.
 `node fetch-sparks.mjs --history-only` banks a sample and stops (~11 requests,
 no token needed) — for exercising this path or hand-filling a missed hour.
 
-The main site repo is private; this repo is public so the pipeline rides
-free Actions minutes (same pattern as `purrwall-releases`).
+The app that renders this data is [lvdou26/purrwall](https://github.com/lvdou26/purrwall).
